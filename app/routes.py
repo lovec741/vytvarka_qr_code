@@ -31,7 +31,7 @@ def login():
     if form.validate_on_submit():
         if form.password.data == Config.ADMIN_PASSWORD:
             session['logged_in'] = True
-            return redirect(url_for('main.index'))
+            return redirect(url_for('main.dashboard'))
         else:
             flash('Invalid password', 'error')
     return render_template('login.jinja', form=form)
