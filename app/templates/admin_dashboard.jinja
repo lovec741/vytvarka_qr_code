@@ -18,7 +18,7 @@
             <td>{{ page.title }}</td>
             <td>{{ page.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>
-                <a href="{{ url_for('main.view', page_id=page.id) }}" class="btn btn-sm btn-primary mb-2 me-2">Zobrazit</a>
+                <a href="{{ url_for('main.view', page_id=page.id) }}" class="btn btn-sm btn-primary mb-2 me-2">Otevřít</a>
                 <a href="{{ url_for('main.edit', page_id=page.id) }}" class="btn btn-sm btn-info mb-2 me-2">Upravit</a>
                 <button class="btn btn-sm btn-secondary generate-qr mb-2 me-2" data-page-id="{{ page.id }}">QR Kód</button>
                 <a href="{{ url_for('main.delete', page_id=page.id) }}" class="btn btn-sm btn-danger mb-2 me-2" onclick="return confirm('Jste si jistí že chcete tuto stránku smazat?')">Smazat</a>

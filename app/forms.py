@@ -10,7 +10,7 @@ class LoginForm(FlaskForm):
 class PageForm(FlaskForm):
     md_placeholder = """Příklad:\n\n# Další Nadpis\n\n## Podnadpis článku\n\nNormální odstavec, kde bude **tato část vykreslená tučně**.\n\n* první odrážka\n* druhá odrážka\n\n1. číslovaná odrážka\n2. číslovaná odrážka"""
     title = StringField('Nadpis', validators=[DataRequired()])
-    pre_media_content = TextAreaField('Úvodní text před médii (podporuje Markdown)', validators=[DataRequired()], render_kw={"placeholder": md_placeholder})
+    pre_media_content = TextAreaField('Úvodní text před médií (podporuje Markdown)', render_kw={"placeholder": md_placeholder})
     main_content = TextAreaField('Hlavní obsah (podporuje Markdown)', validators=[DataRequired()], render_kw={"placeholder": md_placeholder})
     image = FileField('Obrázek', validators=[FileAllowed(['jpg', 'png', 'gif', 'webp'])], render_kw={"accept": ".jpg,.png,.gif,.webp"})
     video = FileField('Video', validators=[FileAllowed(['mp4', 'webm'])], render_kw={"accept": ".mp4,.webm"})

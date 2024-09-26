@@ -110,7 +110,7 @@ def generate_qr(page_id):
 @bp.route('/view/<string:page_id>')
 def view(page_id):
     page = Page.query.get_or_404(page_id)
-    pre_media_content_html = markdown2.markdown(page.pre_media_content)
+    pre_media_content_html = markdown2.markdown(page.pre_media_content) if page.pre_media_content else ""
     main_content_html = markdown2.markdown(page.main_content)
     return render_template('view_page.jinja', page=page, pre_media_content_html=pre_media_content_html, main_content_html=main_content_html)
 
