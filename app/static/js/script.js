@@ -6,9 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if ((mainContentTextarea && mainPreviewDiv) || (preMediaContentTextarea && preMediaPreviewDiv)) {
         let debounceTimer;
-        function reloadPreview(contentType) {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(function() {
+        function reloadPreview(contentType, disableDebounce=false) {
+            function inner() {
                 const content = contentType === 'main' ? mainContentTextarea.value : preMediaContentTextarea.value;
                 const previewDiv = contentType === 'main' ? mainPreviewDiv : preMediaPreviewDiv;
                 
@@ -26,14 +25,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     previewDiv.innerHTML = data.html;
                 })
                 .catch(error => console.error('Error:', error));
-            }, 300); // Debounce for 300ms
+            }
+            if (disableDebounce) {
+                inner();
+            } else {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(inner, 300);    
+            }
         }
 
         if (mainContentTextarea) {
             mainContentTextarea.addEventListener('input', () => reloadPreview('main'));
-            reloadPreview('main');
             preMediaContentTextarea.addEventListener('input', () => reloadPreview('pre_media'));
-            reloadPreview('pre_media');
+            reloadPreview('main', true);
+            reloadPreview('pre_media', true);
 
         }
     }
