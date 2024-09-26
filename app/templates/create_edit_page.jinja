@@ -1,0 +1,79 @@
+{% extends "base.jinja" %}
+
+{% block title %}{% if is_edit %}Upravit{% else %}Vytvořit{% endif %} stránku{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">{% if is_edit %}Upravit{% else %}Vytvořit{% endif %} stránku</h2>
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form.pre_media_content.label(class="form-label") }}
+            {{ form.pre_media_content(class="form-control", rows="15") }}
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Náhled</label>
+            <div id="pre_media_preview" class="border p-3 bg-light text-dark" style="height: 400px; overflow-y: auto;"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form.main_content.label(class="form-label") }}
+            {{ form.main_content(class="form-control", rows="15") }}
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Náhled</label>
+            <div id="main_preview" class="border p-3 bg-light text-dark" style="height: 400px; overflow-y: auto;"></div>
+        </div>
+    </div>
+    <div class="mb-3">
+        {{ form.image.label(class="form-label") }}
+        {% if form.image.data %}
+            <br/>
+            <p>Použitý obrázek: {{ form.image.data }}</p>
+            <img src="{{ url_for('static', filename='uploads/' + form.image.data) }}" alt="Current Image" class="img-fluid mb-2" style="max-height: 200px;">
+        {% endif %}
+        {{ form.image(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.video.label(class="form-label") }}
+        {% if form.video.data %}
+            <br/>
+            <p>Použité video: {{ form.video.data }}</p>
+            <video controls class="img-fluid mb-2" style="max-height: 200px;">
+                <source src="{{ url_for('static', filename='uploads/' + form.video.data) }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% endif %}
+        {{ form.video(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.audio.label(class="form-label") }}
+        {% if form.audio.data %}
+            <br/>
+            <p>Použitý zvuk: {{ form.audio.data }}</p>
+            <audio controls class="mb-2">
+                <source src="{{ url_for('static', filename='uploads/' + form.audio.data) }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        {% endif %}
+        {{ form.audio(class="form-control") }}
+    </div>
+    <p>
+        Před nahráním videa nebo zvuku prosím o zmenšení velikosti souboru pomocí komprese. 
+    </p>
+    <p>
+        Doporučuji vyhledat online "video compressor" nebo "audio compressor" a použít možnost s vyšší kvalitou. Dobře funguje  
+        <a href="https://www.youcompress.com/" target="_blank">tato</a>
+        stránka, ale nemůžu zaručit jak dlouho bude fungovat.
+    </p>
+    <div class="mb-3">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Zrušit</a>
+    </div>
+</form>
+{% endblock %}

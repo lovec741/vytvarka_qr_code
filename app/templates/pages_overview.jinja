@@ -1,0 +1,27 @@
+{% extends "base.jinja" %}
+
+{% block title %}Všechny stránky{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Všechny stránky</h2>
+<table class="table table-dark table-hover">
+    <thead>
+        <tr>
+            <th>Název</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for page in pages %}
+        <tr>
+            <td>{{ page.title }}</td>
+            <td>
+                <a href="{{ url_for('main.view', page_id=page.id) }}" class="btn btn-sm btn-primary">Otevřít</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Upravit</a>
+
+{% endblock %}

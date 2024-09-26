@@ -1,0 +1,79 @@
+{% extends "base.jinja" %}
+
+{% block title %}Admin přehled stránek{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Admin přehled stránek</h2>
+<table class="table table-dark table-hover">
+    <thead>
+        <tr>
+            <th>Název</th>
+            <th>Vytvořeno</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for page in pages %}
+        <tr>
+            <td>{{ page.title }}</td>
+            <td>{{ page.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>
+                <a href="{{ url_for('main.view', page_id=page.id) }}" class="btn btn-sm btn-primary">Zobrazit</a>
+                <a href="{{ url_for('main.edit', page_id=page.id) }}" class="btn btn-sm btn-info">Upravit</a>
+                <button class="btn btn-sm btn-secondary generate-qr" data-page-id="{{ page.id }}">QR Kód</button>
+                <a href="{{ url_for('main.delete', page_id=page.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Jste si jistí že chcete tuto stránku smazat?')">Smazat</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('main.create') }}" class="btn btn-primary">Vytvořit novou stránku</a>
+
+<div class="modal fade" id="qrCodeModal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrCodeModalLabel">QR Kód</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="qrCodeImage" src="" alt="QR Code" class="img-fluid">
+                <a id="downloadQRCode" href="#" download="qr_code.png" class="btn btn-primary mt-3">Stáhnout QR Kód</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const qrButtons = document.querySelectorAll('.generate-qr');
+    const qrCodeModal = new bootstrap.Modal(document.getElementById('qrCodeModal'));
+    const qrCodeImage = document.getElementById('qrCodeImage');
+
+    qrButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const pageId = this.getAttribute('data-page-id');
+            fetch(`/qr/${pageId}`)
+                .then(response => response.text())
+                .then(data => {
+                    qrCodeImage.src = data;
+                    qrCodeModal.show();
+                });
+        });
+    });
+
+    function downloadQRCode() {
+        const img = document.getElementById('qrCodeImage');
+        const link = document.createElement('a');
+        link.href = img.src;
+        link.download = 'qr_code.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    document.getElementById('downloadQRCode').addEventListener('click', downloadQRCode);
+
+});
+</script>
+{% endblock %}

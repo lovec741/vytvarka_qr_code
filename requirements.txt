@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+Flask-WTF
+WTForms
+mysql-connector-python
+Pillow
+markdown2
+python-dotenv
+qrcode

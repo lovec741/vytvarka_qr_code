@@ -1,0 +1,58 @@
+{% extends "base.jinja" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">{{ page.title }}</h2>
+<div class="container py-0">
+  <div class="row">
+    <div class="col-md-8 mx-auto text-center">
+      <div class="text-start">
+        {{ pre_media_content_html|safe }}
+      </div>
+    </div>
+  </div>
+</div>
+{% if page.media %}
+    <div class="media-container my-4 text-center">
+        {% if page.media.get('image') %}
+            {% for image in page.media['image'] %}
+                <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="Page Image" class="img-fluid mb-3">
+            {% endfor %}
+        {% endif %}
+        
+        {% if page.media.get('video') %}
+            {% for video in page.media['video'] %}
+                <video controls class="w-100 mb-3">
+                    <source src="{{ url_for('static', filename='uploads/' + video) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% endfor %}
+        {% endif %}
+        
+        {% if page.media.get('audio') %}
+            {% for audio in page.media['audio'] %}
+                <audio controls class="w-100 mb-3">
+                    <source src="{{ url_for('static', filename='uploads/' + audio) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endif %}
+<div class="container py-0 mb-4">
+  <div class="row">
+    <div class="col-md-8 mx-auto text-center">
+      <div class="text-start">
+        {{ main_content_html|safe }}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# <p class="mt-4">
+    <small>Created: {{ page.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small><br>
+    <small>Last updated: {{ page.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+</p>
+<a href="{{ url_for('main.index') }}" class="btn btn-secondary mt-3">Back to Dashboard</a> #}
+{% endblock %}
