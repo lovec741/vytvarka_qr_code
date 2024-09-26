@@ -14,7 +14,7 @@
   </div>
 </div>
 {% if page.media %}
-    <div class="media-container my-4 text-center">
+    <div class="media-container my-2 text-center">
         {% if page.media.get('image') %}
             {% for image in page.media['image'] %}
                 <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="Page Image" class="img-fluid mb-3">

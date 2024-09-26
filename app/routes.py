@@ -2,14 +2,9 @@ import functools
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from app.forms import LoginForm, PageForm
 from app.models import Page
-from app.utils import create_page, update_page, delete_page, save_image, save_video, save_audio
-from app import db
+from app.utils import create_page, update_page, delete_page, save_image, save_video, save_audio, create_qr_code_url_string
 from config import Config
 import markdown2
-import qrcode
-from io import BytesIO
-import base64
-from flask_wtf.file import FileStorage
 import os
 
 bp = Blueprint('main', __name__)
@@ -108,17 +103,9 @@ def delete(page_id):
 @login_required
 @bp.route('/qr/<string:page_id>')
 def generate_qr(page_id):
+    page = Page.query.get_or_404(page_id)
     page_url = url_for('main.view', page_id=page_id, _external=True)
-    qr = qrcode.QRCode(version=1, box_size=10, border=5)
-    qr.add_data(page_url)
-    qr.make(fit=True)
-    img = qr.make_image()
-    
-    buffered = BytesIO()
-    img.save(buffered, format="PNG")
-    img_str = base64.b64encode(buffered.getvalue()).decode()
-    
-    return f'data:image/png;base64,{img_str}'
+    return create_qr_code_url_string(page, page_url)
 
 @bp.route('/view/<string:page_id>')
 def view(page_id):

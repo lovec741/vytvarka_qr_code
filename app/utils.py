@@ -4,6 +4,10 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.models import Page
 import uuid
+import qrcode
+from io import BytesIO
+from PIL import Image, ImageDraw, ImageFont
+import base64
 
 def create_filename(filename):
     filename = secure_filename(filename)
@@ -51,3 +55,48 @@ def delete_page(page_id):
         db.session.delete(page)
         db.session.commit()
     return page
+
+def create_qr_code_url_string(page, page_url):
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    qr.add_data(page_url)
+    qr.make(fit=True)
+    img = qr.make_image()
+    font = ImageFont.truetype("Roboto-Bold.ttf", 30)
+    draw = ImageDraw.Draw(img)
+
+    qr_size = img.size[0]
+    padding = 20
+    max_text_width = qr_size - padding*2
+    
+    # Wrap text
+    lines = []
+    words = page.title.split()
+    current_line = words[0]
+    for word in words[1:]:
+        if draw.textlength(current_line + " " + word, font=font) <= max_text_width:
+            current_line += " " + word
+        else:
+            lines.append(current_line)
+            current_line = word
+    lines.append(current_line)
+    
+    line_height = font.size + 5
+    text_height = len(lines) * line_height
+    
+    new_img = Image.new('RGB', (qr_size, qr_size + 20 + text_height), color='white')
+    draw = ImageDraw.Draw(new_img)
+    
+    new_img.paste(img, (0, 0))
+
+    for i, line in enumerate(lines):
+        text_width = draw.textlength(line, font=font)
+        text_position = ((qr_size - text_width) / 2, qr_size - 15 + i * line_height)
+        draw.text(text_position, line, fill='black', font=font)
+
+    img = new_img
+    
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode()
+    
+    return f'data:image/png;base64,{img_str}'
